@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Executes all activities through the IGMarkets API.
-
 @author: Cheso7
 
-"""
+'''
 import pandas as pd
 from trading_ig import IGService
 # Get environment login variables and assign to python variables in config file
@@ -16,7 +15,7 @@ def IG_connect():
     ig_service.create_session()
     #Print account details
     account = ig_service.fetch_accounts()
-    print("Account_ID:", account.accountId)
+    print('Account_ID:', account.accountId)
     return ig_service
 
 class Trading:
@@ -36,26 +35,56 @@ class Trading:
                 open_pos_position = opp_df.transpose()
                 open_pos = open_pos_market.join(open_pos_position)
                 return open_pos
-            print("You have no open positions")
+            print('You have no open positions')
 
-        
+    def price_data(self, epic, resolution, num_points):
+            price_data = self.ig_service.fetch_historical_prices_by_epic_and_num_points(
+                epic, 
+                resolution, 
+                num_points)
+            price_data_df = price_data['prices']
+            ohlc = price_data_df.iloc[:,[4,5,6,7,12]]
+            ohlc.columns = ['Open','High','Close','Low','Volume']
+            return ohlc
+
     def open_trade(self, direction, epic, pos_size):
-        "Open a trade in either BUY or SELL direction"
+        'Open a trade in either BUY or SELL direction'
         self.ig_service.create_open_position(
             currency_code='USD',
             direction=direction,
             epic=epic,
-            expiry="-",
-            force_open="true",
-            guaranteed_stop="false",
+            expiry='-',
+            force_open='true',
+            guaranteed_stop='false',
             level=None,
             limit_distance=None,
             limit_level=None,
-            order_type="MARKET",
+            order_type='MARKET',
             size=pos_size,
             quote_id=None,
             stop_distance=None,
             stop_level=None,
-            trailing_stop="false",
+            trailing_stop='false',
             trailing_stop_increment = None)
-        print("New ", direction," position initiated for ", epic)
+        print('New', direction,'position initiated for', epic)
+        
+    def close_trade(self, long_short, epic, open_pos_cur):
+        if long_short == 'short':
+            close_dir = 'BUY'
+        else: close_dir = 'SELL'
+        
+        self.ig_service.close_open_position(
+            deal_id = None,
+            direction = close_dir,
+            epic = epic,
+            expiry='-',
+            level = None,
+            order_type = 'MARKET',
+            quote_id = None,
+            size = str(open_pos_cur['dealSize'].tolist()[0]))
+        print('Existing', long_short, 'position closed for', epic)
+
+    def transcation_history(self, milliseconds):
+        trade_data = self.ig_service.fetch_transaction_history_by_type_and_period(milliseconds, "ALL")
+        return trade_data
+        
