@@ -1,0 +1,3 @@
+.env
+.pylint.d/
+__pycache__/
