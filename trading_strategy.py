@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 '''
-Created on Wed Jan 20 19:20:25 2021
+@author: Cheso7
+'''
 
-@author: jches
-'''
 import copy
 
-# Describe strategy
+# MACD Renko Strategy from Mayank Rasu 'Quant Finance & Algo Trading for Python' Udemy Course
 def signal_1(MERGED_DF,l_s):
     'function to generate signal'
     signal = ''
@@ -29,3 +27,4 @@ def signal_1(MERGED_DF,l_s):
         elif df['macd'].tolist()[-1]>df['macd_sig'].tolist()[-1] and df['macd_slope'].tolist()[-1]>df['macd_sig_slope'].tolist()[-1]:
             signal = 'Close'
     return signal
+

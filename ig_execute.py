@@ -6,6 +6,7 @@ Executes all activities through the IGMarkets API.
 '''
 import pandas as pd
 from trading_ig import IGService
+
 # Get environment login variables and assign to python variables in config file
 import trading_ig_config
 
@@ -34,7 +35,7 @@ class Trading:
                 open_pos_market = opm_df.transpose()
                 open_pos_position = opp_df.transpose()
                 open_pos = open_pos_market.join(open_pos_position)
-                return open_pos
+            return open_pos
             print('You have no open positions')
 
     def price_data(self, epic, resolution, num_points):
@@ -47,7 +48,7 @@ class Trading:
             ohlc.columns = ['Open','High','Close','Low','Volume']
             return ohlc
 
-    def open_trade(self, direction, epic, pos_size):
+    def open_trade(self, direction, epic, pos_size, trailing_stop_distance, trailing_stop_increment):
         'Open a trade in either BUY or SELL direction'
         self.ig_service.create_open_position(
             currency_code='USD',
@@ -62,10 +63,10 @@ class Trading:
             order_type='MARKET',
             size=pos_size,
             quote_id=None,
-            stop_distance=None,
+            stop_distance=trailing_stop_distance,
             stop_level=None,
-            trailing_stop='false',
-            trailing_stop_increment = None)
+            trailing_stop='true',
+            trailing_stop_increment = trailing_stop_increment)
         print('New', direction,'position initiated for', epic)
         
     def close_trade(self, long_short, epic, open_pos_cur):
@@ -84,7 +85,9 @@ class Trading:
             size = str(open_pos_cur['dealSize'].tolist()[0]))
         print('Existing', long_short, 'position closed for', epic)
 
-    def transcation_history(self, milliseconds):
-        trade_data = self.ig_service.fetch_transaction_history_by_type_and_period(milliseconds, "ALL")
+    def transaction_history(self, milliseconds):
+        trade_data = self.ig_service.fetch_transaction_history_by_type_and_period(milliseconds, "ALL_DEAL")
         return trade_data
         
+    
+    

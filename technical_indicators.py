@@ -1,11 +1,15 @@
-# -*- coding: utf-8 -*-
+
 '''
-@author: jches
+@author: Cheso7
+Technical Indicator functions courtesy of Mayank Rasu
 '''
 import numpy as np
 import statsmodels.api as sm
 import copy
 from stocktrends import Renko
+import pandas as pd
+
+pd.set_option('mode.chained_assignment', None)
 
 def MACD(DF,a,b,c):
     '''function to calculate MACD
