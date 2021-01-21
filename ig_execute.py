@@ -51,7 +51,7 @@ class Trading:
         ohlc.columns = ['Open', 'High', 'Close', 'Low', 'Volume']
         return ohlc
 
-    def open_trade(self, direction, epic, pos_size, trailing_stop_distance, trailing_stop_increment):
+    def open_trade(self, direction, epic, pos_size,limit, trailing_stop_distance, trailing_stop_increment):
         'Open a trade in either BUY or SELL direction'
         self.ig_service.create_open_position(
             currency_code='USD',
@@ -61,7 +61,7 @@ class Trading:
             force_open='true',
             guaranteed_stop='false',
             level=None,
-            limit_distance=None,
+            limit_distance=limit,
             limit_level=None,
             order_type='MARKET',
             size=pos_size,

@@ -26,13 +26,15 @@ load_dotenv()
 # Define trading parameters
 pairs = ['CS.D.AUDUSD.MINI.IP', 'CS.D.EURUSD.MINI.IP', 'CS.D.GBPUSD.MINI.IP']  # Epic pairs to be included in the strategy
 pos_size = '50'  # max capital allocated/position size for any epic pair
-resolution = '5Min'  # resolution of ohlc data
+resolution = '2Min'  # resolution of ohlc data
 trailing_stop_increment = '20'
 num_points = 125  # number of data points
 runtime = 6  # run time of trading strategy in hours
-trading_frequency = 5  # frequency to trade in minutes - match to data resolution
+trading_frequency = 2  # frequency to trade in minutes - match to data resolution
 minimum_stop_distance = 0.025 # the minimum stop distance in percent of the instruments being traded
-trailing_stop_distance = 2
+trailing_stop_distance = '4'
+limit = '2'
+
 #Connect to the IG Markets API and return current positions
 ig_service = ig_execute.IG_connect()
 trading = ig_execute.Trading(ig_service)
@@ -71,7 +73,7 @@ def main():
 
             if signal in ('BUY', 'SELL'):
                 trading.open_trade(
-                    signal, epic, pos_size, trailing_stop_distance, trailing_stop_increment)
+                    signal, epic, pos_size, limit, trailing_stop_distance, trailing_stop_increment)
 
             elif signal == 'Close':
                 trading.close_trade(long_short, epic, open_pos_cur)
@@ -79,13 +81,13 @@ def main():
             elif signal == 'Close_Buy':
                 direction = 'BUY'
                 trading.close_trade(long_short, epic, open_pos_cur)
-                trading.open_trade(direction, epic, pos_size,
+                trading.open_trade(direction, epic, pos_size, limit, 
                                    trailing_stop_distance, trailing_stop_increment)
 
             elif signal == 'Close_Sell':
                 direction = 'SELL'
                 trading.close_trade(long_short, epic, open_pos_cur)
-                trading.open_trade(direction, epic, pos_size,
+                trading.open_trade(direction, epic, pos_size, limit,
                                    trailing_stop_distance, trailing_stop_increment)
 
     except Exception as e:
