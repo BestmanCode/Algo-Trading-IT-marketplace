@@ -1,11 +1,11 @@
-
 """
+
 @author: Cheso7
+
 """
 
 import pandas as pd
 import datetime
-
 
 def measure_performance(trade_data, seconds, trading_summary):
     if len(trade_data) > 0:

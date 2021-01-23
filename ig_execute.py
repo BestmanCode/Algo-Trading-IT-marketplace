@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 '''
+
 Executes all activities through the IGMarkets API.
 @author: Cheso7
 

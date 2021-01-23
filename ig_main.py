@@ -2,43 +2,41 @@
 @author: Cheso7
 
 To do list:
-   - Export or store historical performance data and create function to compare strategies
-   - Implent multiple strategies that can be called
+   - Database strategy performance
    - Add sentiment trading
-
+   - RSI Strategy
+   
 '''
-# Populate system environment variables with login variables
+# Import packages
 import pandas as pd
 import ig_execute
 import time
 import sys
+
+# Import Python scripts
 import trading_performance
 import trading_strategy
 import technical_indicators
+
+# Populate system environment variables with login variables
 from dotenv import load_dotenv
 load_dotenv()
-
-# Import Python scripts
-
-# Import packages
-
 
 # Define trading parameters
 pairs = ['CS.D.AUDUSD.MINI.IP', 'CS.D.EURUSD.MINI.IP', 'CS.D.GBPUSD.MINI.IP']  # Epic pairs to be included in the strategy
 pos_size = '50'  # max capital allocated/position size for any epic pair
-resolution = '2Min'  # resolution of ohlc data
+resolution = '5Min'  # resolution of ohlc data
 trailing_stop_increment = '20'
-num_points = 125  # number of data points
+num_points = 250  # number of data points
 runtime = 6  # run time of trading strategy in hours
-trading_frequency = 2  # frequency to trade in minutes - match to data resolution
+trading_frequency = 5  # frequency to trade in minutes - match to data resolution
 minimum_stop_distance = 0.025 # the minimum stop distance in percent of the instruments being traded
 trailing_stop_distance = '4'
-limit = '2'
+limit = '4'
 
 #Connect to the IG Markets API and return current positions
 ig_service = ig_execute.IG_connect()
 trading = ig_execute.Trading(ig_service)
-
 
 def main():
     try:
@@ -65,6 +63,7 @@ def main():
 
             #Calculate the signal for the trade based off the chosen strategy
             signal = trading_strategy.MACD_Renko(technical_indicators.renko_merge(ohlc), long_short)
+            # signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,5), long_short)
 
             if len(signal) > 1:
                 print(signal, 'for', epic)
