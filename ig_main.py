@@ -62,8 +62,8 @@ def main():
             # trailing_stop_distance = str(ohlc.iloc[-1]['High']*minimum_stop_distance)
 
             # Calculate the signal for the trade based off the chosen strategy
-            signal = trading_strategy.MACD_Renko(technical_indicators.renko_merge(ohlc), long_short)
-            # signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,5), long_short)
+            # signal = trading_strategy.MACD_Renko(technical_indicators.renko_merge(ohlc), long_short)
+            signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,14), long_short)
 
             if len(signal) > 1:
                 print(signal, 'for', epic)

@@ -1,0 +1,1 @@
+            signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,5), long_short)

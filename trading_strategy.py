@@ -30,21 +30,20 @@ def MACD_Renko(MERGED_DF, l_s):
             signal = 'Close'
     return signal
 
-def RSI(MERGED_DF, l_s):
+def RSI(RSI, l_s):
     'function to generate signal'
     signal = ''
-    df = copy.deepcopy(MERGED_DF)
     if l_s == '':
-        if df['RSI'].tolist()[-1] < 30:
+        if RSI < 30:
             signal = 'BUY'
-        elif df['RSI'].tolist()[-1] > 70:
+        elif RSI > 70:
             signal = 'SELL'
 
     elif l_s == 'long':
-        if df['RSI'].tolist()[-1] < 70:
+        if RSI < 70:
             signal = 'Close'
 
     elif l_s == 'short':
-        if df['RSI'].tolist()[-1] < 30:
+        if RSI < 30:
             signal = 'Close'
     return signal

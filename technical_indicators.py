@@ -93,7 +93,7 @@ def renko_merge(DF):
 def RSI(DF,n):
     "function to calculate RSI"
     df = DF.copy()
-    df['delta']=df['Adj Close'] - df['Adj Close'].shift(1)
+    df['delta']=df['Close'] - df['Close'].shift(1)
     df['gain']=np.where(df['delta']>=0,df['delta'],0)
     df['loss']=np.where(df['delta']<0,abs(df['delta']),0)
     avg_gain = []
@@ -114,4 +114,4 @@ def RSI(DF,n):
     df['avg_loss']=np.array(avg_loss)
     df['RS'] = df['avg_gain']/df['avg_loss']
     df['RSI'] = 100 - (100/(1+df['RS']))
-    return df['RSI']
+    return df['RSI'][249]
