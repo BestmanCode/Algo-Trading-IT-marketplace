@@ -15,6 +15,7 @@ def IG_connect():
     #Connect to IGService
     ig_service = IGService(trading_ig_config.config.username, trading_ig_config.config.password,
                            trading_ig_config.config.api_key, trading_ig_config.config.acc_type)
+
     ig_service.create_session()
     #Print account details
     account = ig_service.fetch_accounts()
