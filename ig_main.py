@@ -1,15 +1,12 @@
 '''
 @author: Cheso7
    TODO: Database strategy performance
-   TODO: Add sentiment trading
-   TODO: RSI Strategy
 '''
 
 # Import packages
 import pandas as pd
 import time
 import sys
-print(sys.version)
 
 # Import Python scripts
 import trading_performance
@@ -23,15 +20,15 @@ load_dotenv()
 
 # Define trading parameters
 pairs = ['CS.D.AUDUSD.MINI.IP', 'CS.D.EURUSD.MINI.IP', 'CS.D.GBPUSD.MINI.IP']
-pos_size = '50'  # max capital allocated/position size for any epic pair
-resolution = '5Min'  # resolution of ohlc data
-trailing_stop_increment = '20'
+pos_size = '10'  # max capital allocated/position size for any epic pair
+resolution = '15Min'  # resolution of ohlc data
+trailing_stop_increment = '5' #increment in pips to follow trailing stop
 num_points = 250  # number of data points
 runtime = 6  # run time of trading strategy in hours
-trading_frequency = 5  # frequency to trade in minutes - match to data resolution
+trading_frequency = 15  # frequency to trade in minutes - match to data resolution
 minimum_stop_distance = 0.025  # the minimum stop distance in percent of the instruments being traded
-trailing_stop_distance = '4'
-limit = '8'
+trailing_stop_distance = '20'
+limit = '30'
 
 # Connect to the IG Markets API and return current positions
 ig_service = ig_execute.IG_connect()
@@ -57,13 +54,17 @@ def main():
 
             # Return historic OHLC price data for the epic based on resolution and number of points.
             ohlc = trading.price_data(epic, resolution, num_points)
-
+            # market_ID = trading.market_by_epic(epic)
+            client_sentiment = trading.client_sentiment(epic)
+            
             '''Set this for any instrument that has the trailing stop as a percentage and not in pips'''
             # trailing_stop_distance = str(ohlc.iloc[-1]['High']*minimum_stop_distance)
 
             # Calculate the signal for the trade based off the chosen strategy
             # signal = trading_strategy.MACD_Renko(technical_indicators.renko_merge(ohlc), long_short)
-            signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,14), long_short)
+            # signal = trading_strategy.RSI(technical_indicators.RSI(ohlc,14), long_short)
+            # signal = trading_strategy.MACD_Renko_RSI(technical_indicators.renko_merge(ohlc), technical_indicators.RSI(ohlc,14), long_short)
+            signal = trading_strategy.sentiment_trading(client_sentiment, long_short)
 
             if len(signal) > 1:
                 print(signal, 'for', epic)

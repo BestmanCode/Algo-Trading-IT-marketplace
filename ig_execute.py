@@ -94,3 +94,21 @@ class Trading:
         trade_data = self.ig_service.fetch_transaction_history_by_type_and_period(
             milliseconds, "ALL_DEAL")
         return trade_data
+    
+    def client_sentiment(self, epic):
+        market_ID = self.market_by_epic(epic)
+        client_sentiment = ''
+        client_sentiment_data = self.ig_service.fetch_client_sentiment_by_instrument(market_ID)
+        long = client_sentiment_data['longPositionPercentage']
+        short = client_sentiment_data['shortPositionPercentage']
+
+        if long > short:
+            client_sentiment = 'bullish'
+        else:
+            client_sentiment = 'bearish'
+        return client_sentiment
+
+    def market_by_epic(self, epic):
+        market = self.ig_service.fetch_market_by_epic(epic)
+        market_ID = market['instrument']['marketId']
+        return market_ID
